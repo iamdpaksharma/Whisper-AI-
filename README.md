@@ -86,3 +86,4 @@ Below is an example usage of whisper.detect_language() and whisper.decode() whic
 
     # print the recognized text
     print(result.text)
+# For more Details Ping me on my LinkedIn [ https://www.linkedin.com/in/iamdeeps/ ]
