@@ -13,19 +13,19 @@ pip install git+https://github.com/openai/whisper.git
 To update the package to the latest version of this repository, please run:
 pip install --upgrade --no-deps --force-reinstall git+https://github.com/openai/whisper.git
 It also requires the command-line tool ffmpeg to be installed on your system, which is available from most package managers:
- # on Ubuntu or Debian
+## on Ubuntu or Debian
 sudo apt update && sudo apt install ffmpeg
 
- # on Arch Linux
+## on Arch Linux
 sudo pacman -S ffmpeg
 
- # on MacOS using Homebrew (https://brew.sh/)
+# on MacOS using Homebrew (https://brew.sh/)
 brew install ffmpeg
 
- # on Windows using Chocolatey (https://chocolatey.org/)
+# on Windows using Chocolatey (https://chocolatey.org/)
 choco install ffmpeg
 
- # on Windows using Scoop (https://scoop.sh/)
+# on Windows using Scoop (https://scoop.sh/)
 scoop install ffmpeg
 You may need rust installed as well, in case tiktoken does not provide a pre-built wheel for your platform. If you see installation errors during the pip install command above, please follow the Getting started page to install Rust development environment. Additionally, you may need to configure the PATH environment variable, e.g. export PATH="$HOME/.cargo/bin:$PATH". If the installation fails with No module named 'setuptools_rust', you need to install setuptools_rust, e.g. by running:
 pip install setuptools-rust
