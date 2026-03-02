@@ -39,3 +39,50 @@ There are six model sizes, four with English-only versions, offering speed and a
 | medium | 769 M      | medium.en         | medium             | ~5 GB         | ~2x          |
 | large  | 1550 M     | N/A               | large              | ~10 GB        | 1x           |
 | turbo  | 809 M      | N/A               | turbo              | ~6 GB         | ~8x          |
+
+The .en models for English-only applications tend to perform better, especially for the tiny.en and base.en models. We observed that the difference becomes less significant for the small.en and medium.en models. Additionally, the turbo model is an optimized version of large-v3 that offers faster transcription speed with a minimal degradation in accuracy.
+Whisper's performance varies widely depending on the language. The figure below shows a performance breakdown of large-v3 and large-v2 models by language, using WERs (word error rates) or CER (character error rates, shown in Italic) evaluated on the Common Voice 15 and Fleurs datasets. Additional WER/CER metrics corresponding to the other models and datasets can be found in Appendix D.1, D.2, and D.4 of the paper, as well as the BLEU (Bilingual Evaluation Understudy) scores for translation in Appendix D.3.
+# Command-line usage
+The following command will transcribe speech in audio files, using the turbo model:
+whisper audio.flac audio.mp3 audio.wav --model turbo
+The default setting (which selects the turbo model) works well for transcribing English. However, the turbo model is not trained for translation tasks. If you need to translate non-English speech into English, use one of the multilingual models (tiny, base, small, medium, large) instead of turbo.
+For example, to transcribe an audio file containing non-English speech, you can specify the language:
+whisper japanese.wav --language Japanese
+To translate speech into English, use:
+whisper japanese.wav --model medium --language Japanese --task translate
+Note: The turbo model will return the original language even if --task translate is specified. Use medium or large for the best translation results.
+Run the following to view all available options:
+whisper --help
+See tokenizer.py for the list of all available languages.
+
+# Python usage
+Transcription can also be performed within Python:
+import whisper
+
+model = whisper.load_model("turbo")
+result = model.transcribe("audio.mp3")
+print(result["text"])
+Internally, the transcribe() method reads the entire file and processes the audio with a sliding 30-second window, performing autoregressive sequence-to-sequence predictions on each window.
+Below is an example usage of whisper.detect_language() and whisper.decode() which provide lower-level access to the model.
+ 
+  import whisper
+  
+  model = whisper.load_model("turbo")
+
+    # load audio and pad/trim it to fit 30 seconds
+    audio = whisper.load_audio("audio.mp3") 
+    audio = whisper.pad_or_trim(audio)
+
+    # make log-Mel spectrogram and move to the same device as the model
+    mel = whisper.log_mel_spectrogram(audio, n_mels=model.dims.n_mels).to(model.device)
+
+    # detect the spoken language
+     _, probs = model.detect_language(mel)
+    print(f"Detected language: {max(probs, key=probs.get)}")
+
+    # decode the audio
+    options = whisper.DecodingOptions()
+    result = whisper.decode(model, mel, options)
+
+    # print the recognized text
+    print(result.text)
